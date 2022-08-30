@@ -1,0 +1,7 @@
+# [target.'cfg(target_os = "none")']
+# runner = "cargo build --package boot --target ./boot/x86_64-bootloader.json -Z unstable-options -Zbuild-std=core -Zbuild-std-features=compiler-builtins-mem --"
+
+[alias]
+kbuild = "build --target x86_64-os.json -Zbuild-std=core -Zbuild-std-features=compiler-builtins-mem"
+kimage = "run --target x86_64-os.json -Zbuild-std=core -Zbuild-std-features=compiler-builtins-mem -- --no-run"
+krun = "run --target x86_64-os.json -Zbuild-std=core -Zbuild-std-features=compiler-builtins-mem"

@@ -1,0 +1,15 @@
+[package]
+name = "boot"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+boot_info = {path = "../boot_info"}
+conquer-once = { version = "0.3.2", default-features = false }
+xmas-elf = "0.8.0"
+x86_64 = "0.14.10"
+spinning_top = "0.2.4"
+log = "0.4.17"
+rsdp = "2.0.0"

@@ -1,0 +1,28 @@
+[package]
+name = "tiny_os"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+members = [
+    "boot",
+    "kernel",
+    "boot_info",
+]
+
+[dependencies]
+llvm-tools = { version = "0.1.1" }
+
+[profile.dev]
+panic = "abort"
+
+[profile.kernel]
+inherits = "release"
+panic = "abort"
+
+[profile.bootloader]
+inherits = "release"
+panic = "abort"
+opt-level = "s"

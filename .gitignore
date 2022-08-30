@@ -1,0 +1,6 @@
+/target
+# bochs debug 生成的文件
+bx_enh_dbg.ini
+bochs/bochs.out
+bochs/os.img
+/vbox

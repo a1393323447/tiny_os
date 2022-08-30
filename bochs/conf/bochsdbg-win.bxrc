@@ -1,0 +1,24 @@
+# 运行内存
+megs: 32
+
+romimage: file="./bochs/conf/BIOS-bochs-latest"
+vgaromimage: file="./bochs/conf/VGABIOS-lgpl-latest"
+
+# 从硬盘启动
+boot: disk
+
+# 设置日志文件的输入位置
+log: bochs/bochs.out
+
+# 关闭鼠标，打开键盘
+mouse: enabled=0
+keyboard: keymap="./bochs/conf/x11-pc-us.map"
+
+# 设置硬盘
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata0-master: type=disk, mode=flat, path="./bochs/os.img"
+
+# 开启魔术断点
+magic_break: enabled=1
+
+display_library: win32, options="gui_debug"
