@@ -122,16 +122,22 @@ fn create_disk_image(
 
     drop(file);
 
+    const BLOCK_SIZE: usize = 512;
+    let mut file = std::fs::File::create(output_bin_path).expect("failed to create bin file");
+
     for pos in 0..bytes.len()-1 {
         if bytes[pos] == 0x55 && bytes[pos + 1] == 0xaa {
-            let mut file = std::fs::File::create(output_bin_path).expect("failed to create bin file");
-            let bin = &bytes[pos - 510..];
+            let bin = &bytes[pos - (BLOCK_SIZE - 2)..];
             file.write_all(bin).expect("failed to copy bin");
             // pad to 512 align
             let pad = vec![0u8; 512 - bin.len() % 512];
             file.write_all(&pad).expect("failed to pad bin");
+
+            return;
         }
     }
+
+    unreachable!("Unexpected Error: can not find magic number 0xaa55 in temp bin file");
 }
 
 fn main() {

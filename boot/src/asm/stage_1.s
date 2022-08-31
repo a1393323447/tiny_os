@@ -95,6 +95,87 @@ real_mode:
     # back to real mode, but internal data segment register is still loaded
     # with gdt segment -> we can access the full 4GiB of memory
 
+# https://wiki.osdev.org/Disk_access_using_the_BIOS_(INT_13h)
+# 有些机器不支持扩展 bios 中断, 所以要先检查机器是否支持
+check_int13h_extensions:
+    mov ah, 0x41
+    mov bx, 0x55aa
+    # dl contains drive number
+    int 0x13
+    jc port_read_hdd
+
+# To read a disk:
+#   Set the proper values in the disk address packet structure
+#   Set DS:SI -> Disk Address Packet in memory
+#   Set AH = 0x42
+#   Set DL = "drive number" -- typically 0x80 for the "C" drive
+#   Issue an INT 0x13.
+# The carry flag will be set if there is any error during the transfer. AH should be set to 0 on success.
+# To write to a disk, set AH = 0x43.
+# 理论上我们最多一次读 127 个 sector -> 127 * 512 = 65024 字节
+load_rest_of_bootloader_from_disk:
+    mov eax, offset _rest_of_bootloader_start_addr
+
+    mov ecx, 0   # 当前加载的部分相对于 _rest_of_bootloader_start_addr 的偏移
+                 # 以字节为单位
+load_from_disk:
+    mov eax, offset _rest_of_bootloader_start_addr
+    add eax, ecx # 获取当前加载到的地址
+
+    # dap buffer segment
+    mov ebx, eax
+    shr ebx, 4 # 物理地址 = 段基地址 * 16 + 偏移地址, 故段基地址要除以 16
+    mov [dap_buf_seg], bx
+
+    # buffer offset
+    # 偏移地址 = 物理地址 - 段基地址 * 16
+    shl ebx, 4 # multiply by 16
+    sub eax, ebx
+    mov [dap_buf_offset], ax
+
+    mov eax, offset _rest_of_bootloader_start_addr
+    add eax, ecx # eax = 当前加载到的地址
+
+    # number of disk blocks to load
+    mov ebx, offset _rest_of_bootloader_end_addr
+    sub ebx, eax # ebx = end - start = 剩下的需要加载的字节数
+    jz load_from_disk_done # 如果等于 0 则加载完成
+    shr ebx, 9 # div 512
+               # linker.ld 中 _rest_of_bootloader_start_addr 紧接着 .boot-first-stage ,
+               # _rest_of_bootloader_end_addr 以 512 字节对齐
+               # 而 .boot-first-stage 正好 512 字节
+               # 故它们的差也一定是 512 字节的倍数, 一定整除, 不用向上取整
+    cmp ebx, 0xff # ebx <= 0xff(一次最多读 0xff 个扇区) ?
+    jle .continue_loading_from_disk # 如果是, 则读 ebx 个扇区
+    mov ebx, 0xff # 如果 ebx > 0xff, 则一次只能读 0xff 个扇区
+.continue_loading_from_disk:
+    mov [dap_sector_num], bx # 设置扇区数
+    
+    shl ebx, 9   # ebx * 512 = 读取的字节数
+    add ecx, ebx # 更新 offset
+
+    # 计算 LBA 号
+    mov ebx, offset _start
+    sub eax, ebx
+    shr eax, 9 # divide by 512 (block size)
+    mov [dap_start_lba], eax
+
+    # BIOS 中断读取硬盘
+    mov si, offset dap
+    mov ah, 0x42
+    int 0x13
+    jc rest_of_bootloader_load_failed
+
+    jmp load_from_disk # 循环
+
+load_from_disk_done:
+    # reset segment to 0
+    mov word ptr [dap_buf_seg], 0
+
+to_stage_2:
+    mov eax, offset stage2
+    jmp eax
+
 port_read_hdd:
     mov ebx, offset _rest_of_bootloader_start_addr
     mov ecx, offset _rest_of_bootloader_end_addr
@@ -108,9 +189,10 @@ port_read_hdd:
     mov edi, offset _rest_of_bootloader_start_addr
     call port_read
 
-to_stage_2:
-    mov eax, offset stage2
-    jmp eax
+    jmp to_stage_2
+
+rest_of_bootloader_load_failed:
+    jmp rest_of_bootloader_load_failed
 
 # --------------------------------- func ----------------------------------------
 
@@ -258,9 +340,6 @@ port_read:
 
 # ------------------------------------ data -------------------------------------
 boot_start_str: .ascii "Booting(1)  "
-
-null:
-    .quad 0
     
 # https://wiki.osdev.org/GDT
 gdt32info: # (GDTR)
@@ -293,6 +372,36 @@ videodesc32:            # 视频段描述符 -> 映射到 VGA
     .byte 0
 gdt32_end:
 
+# Format of disk address packet       https://wiki.osdev.org/Disk_access_using_the_BIOS_(INT_13h)
+# Offset	Size	Description
+#  0	     1	 size of packet (16 bytes)
+#  1	     1	 always 0
+#  2	     2	 number of sectors to transfer (max 127 on some BIOSes) ---> 一次最多读 127 个 sector
+#  4	     4	 transfer buffer (16 bit segment:16 bit offset) (see note #1)
+#  8	     4	 lower 32-bits of 48-bit starting LBA
+# 12	     4	 upper 16-bits of 48-bit starting LBA
+# Notes:
+
+# (1) The 16 bit segment value ends up at an offset of 6 from the beginning of the structure 
+# (i.e., when declaring segment:offset as two separate 16-bit fields, place the offset first 
+# and then follow with the segment because x86 is little-endian).
+
+# (2) If the disk drive itself does not support LBA addressing, 
+# the BIOS will automatically convert the LBA to a CHS address for you -- so this function still works.
+
+# (3) The transfer buffer should be 16-bit (2 byte) aligned.
+
+dap: # disk access packet
+    .byte 0x10 # size of dap (16 bytes)
+    .byte 0    # always 0
+dap_sector_num:
+    .word 0    # number of sectors
+dap_buf_offset:
+    .word 0    # offset to memory buffer
+dap_buf_seg:
+    .word 0    # segment of memory buffer
+dap_start_lba:
+    .quad 0    # start logical block address
 
 # Magic number 0x55 0xaa
 .org 510
