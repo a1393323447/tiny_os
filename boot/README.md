@@ -37,7 +37,6 @@
 
 ## 杂项说明
 在 `src/asm` 目录下还有没有用到的汇编文件，它们是我在写 `bootLoader` 时一些尝试，虽然最终没有用上，但还是很有保存的价值：
-- `int0x13.s` : 通过 `BIOS` 中断读取硬盘文件
 - `load.s` : 通过 `BIOS` 中断加载内核
 - `vesa.s` : 引用自 https://gitlab.redox-os.org/redox-os/bootloader ，是用于获取显卡信息，配置 `VESA` 显式模式的，但最终决定先在字符模式下，初步完成 `tiny OS` 再考虑图形模式
 
