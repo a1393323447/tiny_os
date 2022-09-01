@@ -130,8 +130,14 @@ fn create_disk_image(
             let bin = &bytes[pos - (BLOCK_SIZE - 2)..];
             file.write_all(bin).expect("failed to copy bin");
             // pad to 512 align
-            let pad = vec![0u8; 512 - bin.len() % 512];
-            file.write_all(&pad).expect("failed to pad bin");
+            let reminder = bin.len() % BLOCK_SIZE;
+            if reminder != 0 {
+                let pad = vec![0u8; BLOCK_SIZE - reminder];
+                file.write_all(&pad).expect("failed to pad bin");
+                println!("image size = {} bytes", bin.len() + pad.len());
+            } else {
+                println!("image size = {} bytes", bin.len());
+            }
 
             return;
         }

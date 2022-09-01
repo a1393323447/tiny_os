@@ -1,3 +1,5 @@
+// https://wiki.osdev.org/Exceptions
+
 use lazy_static::lazy_static;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 
@@ -17,6 +19,27 @@ extern "x86-interrupt" fn breakpoint_handler(
     log::debug!("BREAKPOINT\n{:#?}", stack_frame);
 }
 
+
+/// 只有先触发第一类异常时, 触发第二类异常才会触发 double falut
+/// ```text
+/// | ------------------------ | ------------------------ |
+/// | First Exception          |   Second Exception       |
+/// | ------------------------ | ------------------------ |
+/// | Divide-by-zero,          | Segment Not Present,     |
+/// | Invalid TSS,             | Stack-Segment Fault,     |
+/// | Segment Not Present,     | General Protection Fault |
+/// | Stack-Segment Fault,     | Invalid TSS,             |
+/// | General Protection Fault |                          |
+/// | ------------------------ | ------------------------ |
+/// |                          | Page Fault,              |
+/// |                          | Invalid TSS,             |
+/// |        Page Fault        | Segment Not Present,     |
+/// |                          | Stack-Segment Fault,     |
+/// |                          | General Protection Fault |
+/// | ------------------------ | ------------------------ |
+/// ```
+/// 
+/// double fault 的 error code 恒为 0
 extern "x86-interrupt" fn double_fault_handler(
     stack_frame: InterruptStackFrame, _error_code: u64) -> !
 {

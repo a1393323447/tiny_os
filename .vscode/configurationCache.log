@@ -1,1 +1,1 @@
-{"buildTargets":["bochsrun","build"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
+{"buildTargets":["build-debug","build-release","clean","debug-qemu","run-bochs","run-qemu"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

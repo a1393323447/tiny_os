@@ -1,4 +1,8 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+Makefile:22: warning: overriding recipe for target 'debug-qemu'
+Makefile:18: warning: ignoring old recipe for target 'debug-qemu'
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -6,14 +10,14 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Aug 30 08:26:20 2022
+# Make data base, printed on Thu Sep  1 10:11:10 2022
 
 # Variables
 
 # environment
 LC_ALL = C
 # environment
-WSLENV = VSCODE_WSL_EXT_LOCATION/up
+WSLENV = ELECTRON_RUN_AS_NODE/w:WT_SESSION::WT_PROFILE_ID
 # environment
 VSCODE_CWD = /mnt/c/Users/HP/AppData/Local/Programs/Microsoft VS Code
 # default
@@ -64,6 +68,8 @@ MAKEFILE_LIST := Makefile
 @F = $(notdir $@)
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
+# environment
+WT_PROFILE_ID = {61c54bbd-c2c6-5271-96e7-009a87ff44bf}
 # automatic
 *F = $(notdir $*)
 # automatic
@@ -77,7 +83,7 @@ SHELL = /bin/sh
 # default
 MAKECMDGOALS := all
 # environment
-SHLVL = 0
+SHLVL = 1
 # environment
 MAKELEVEL := 0
 # default
@@ -91,11 +97,13 @@ MOTD_SHOWN = update-motd
 # automatic
 ^F = $(notdir $^)
 # environment
+WT_SESSION = 607e1bf5-08c3-4afe-a6ab-e9a6e32963eb
+# environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # automatic
 ?F = $(notdir $?)
 # environment
-NAME = LAPTOP-PM8DD81J
+NAME = Code
 # environment
 HOSTTYPE = x86_64
 # environment
@@ -103,7 +111,7 @@ LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:
 # automatic
 +F = $(notdir $+)
 # environment
-WSL_INTEROP = /run/WSL/13_interop
+WSL_INTEROP = /run/WSL/17516_interop
 # 'override' directive
 GNUMAKEFLAGS := 
 # environment
@@ -111,15 +119,15 @@ LOGNAME = yang
 # environment
 VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/HP/.vscode/extensions/ms-vscode-remote.remote-wsl-0.66.3
 # makefile
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := clean
 # environment
 USER = yang
 # default
 MAKE_VERSION := 4.3
 # environment
-_ = /home/yang/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/node
+_ = /mnt/c/Users/HP/AppData/Local/Programs/Microsoft VS Code/bin/code
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-dbdf88cf-ac12-439d-af93-63165bec7682.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-696d48d2-da47-4975-b03c-a09749e2761e.sock
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
@@ -139,7 +147,7 @@ WSL_DISTRO_NAME = Ubuntu-22.04
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # variable set hash-table stats:
-# Load=64/1024=6%, Rehash=0, Collisions=1/94=1%
+# Load=66/1024=6%, Rehash=0, Collisions=1/96=1%
 
 # Pattern-specific Variable Values
 
@@ -147,9 +155,9 @@ WSL_DISTRO_NAME = Ubuntu-22.04
 
 # Directories
 
-# . (device 2064, inode 32255): 18 files, no impossibilities.
+# . (device 2064, inode 32255): 20 files, no impossibilities.
 
-# 18 files, no impossibilities in 1 directories.
+# 20 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -160,15 +168,43 @@ WSL_DISTRO_NAME = Ubuntu-22.04
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-20 16:05:06.4695414
+#  Last modified 2022-09-01 09:37:01.6493161
 #  File has been updated.
 #  Successfully updated.
+
+build-debug:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 8):
+	cargo run --release # todo
+
+clean:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 2):
+	cargo clean
+
+build-release:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 5):
+	cargo run --release
 
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+
+run-qemu: clean build-release
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 11):
+	qemu-system-x86_64 -drive format=raw,file=target/os.img -boot c --no-reboot
 
 # Not a target:
 all:
@@ -177,42 +213,37 @@ all:
 #  File does not exist.
 #  File has not been updated.
 
-build:
+debug-qemu: clean build-debug clean build-debug
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 2):
-	cargo run --release
+#  recipe to execute (from 'Makefile', line 22):
+	dd if=target/os.img of=bochs/os.img bs=512 count=50000 conv=notrunc
+	bochsdbg -q -f bochs/conf/bochsdbg-gdb.bxrc &
+	rust-gdb target/x86_64-bootloader/bootloader/boot --eval-command="target remote :1234"
 
-bochsrun: target/bootloader.bin
+run-bochs: clean build-release
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 5):
-	echo "test"
-
-# Not a target:
-target/bootloader.bin:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 14):
+	dd if=target/os.img of=bochs/os.img bs=512 count=50000 conv=notrunc
+	bochs -q -f bochs/conf/bochsrc.bxrc
 
 # files hash-table stats:
-# Load=7/1024=1%, Rehash=0, Collisions=0/18=0%
+# Load=10/1024=1%, Rehash=0, Collisions=0/29=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 26 / storage = 232 B / avg = 8 B
-# current buf: size = 8162 B / used = 232 B / count = 26 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 31 / storage = 269 B / avg = 8 B
+# current buf: size = 8162 B / used = 269 B / count = 31 / avg = 8 B
 
-# strcache performance: lookups = 32 / hit rate = 18%
+# strcache performance: lookups = 51 / hit rate = 39%
 # hash-table stats:
-# Load=26/8192=0%, Rehash=0, Collisions=0/32=0%
-# Finished Make data base on Tue Aug 30 08:26:20 2022
+# Load=31/8192=0%, Rehash=0, Collisions=0/51=0%
+# Finished Make data base on Thu Sep  1 10:11:10 2022
 
  
-make: *** No rule to make target 'all'.  Stop.
-

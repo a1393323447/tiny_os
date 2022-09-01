@@ -1,5 +1,8 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/yang/tiny_os'
-cargo run --release
+cargo clean
 make: Leaving directory '/home/yang/tiny_os'
  
+Makefile:22: warning: overriding recipe for target 'debug-qemu'
+Makefile:18: warning: ignoring old recipe for target 'debug-qemu'
+

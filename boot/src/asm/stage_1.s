@@ -145,9 +145,9 @@ load_from_disk:
                # _rest_of_bootloader_end_addr 以 512 字节对齐
                # 而 .boot-first-stage 正好 512 字节
                # 故它们的差也一定是 512 字节的倍数, 一定整除, 不用向上取整
-    cmp ebx, 0xff # ebx <= 0xff(一次最多读 0xff 个扇区) ?
+    cmp ebx, 0x7f # ebx <= 0x7f(一次最多读 0x7f 个扇区) ?
     jle .continue_loading_from_disk # 如果是, 则读 ebx 个扇区
-    mov ebx, 0xff # 如果 ebx > 0xff, 则一次只能读 0xff 个扇区
+    mov ebx, 0x7f # 如果 ebx > 0x7f, 则一次只能读 0x7f 个扇区
 .continue_loading_from_disk:
     mov [dap_sector_num], bx # 设置扇区数
     
@@ -164,7 +164,7 @@ load_from_disk:
     mov si, offset dap
     mov ah, 0x42
     int 0x13
-    jc rest_of_bootloader_load_failed
+    jc port_read_hdd
 
     jmp load_from_disk # 循环
 
@@ -191,8 +191,8 @@ port_read_hdd:
 
     jmp to_stage_2
 
-rest_of_bootloader_load_failed:
-    jmp rest_of_bootloader_load_failed
+__spin:
+    jmp __spin
 
 # --------------------------------- func ----------------------------------------
 
@@ -256,7 +256,7 @@ port_read:
 
     .check_conditions:         # ecx: 需要读取的扇区数
         xor eax, eax           # eax = 0
-        cmp ecx, 0xff          # ecx >= 0xff ?  
+        cmp ecx, 0x7f          # ecx >= 0x7f ?  
         jge .set_selectors_num # Y -> .set_selectors_num
         cmp ecx, 0             # ecx >= 0 ?
         jle .return            # Y -> return
@@ -327,7 +327,7 @@ port_read:
     jmp .check_conditions   # 检查循环条件
 
     .set_selectors_num:
-        mov al, 0xff        # 剩余的需要读取的扇区数 >= 0xff -> 设置 al 为 0xff
+        mov al, 0x7f        # 剩余的需要读取的扇区数 >= 0x7f -> 设置 al 为 0xff
         jmp .sendsignal
 
     .return:
