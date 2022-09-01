@@ -9,7 +9,7 @@ build-debug:
 
 run-qemu: clean build-release
 	dd if=target/os.img of=bochs/os.img bs=512 count=50000 conv=notrunc
-	qemu-system-x86_64 -drive format=raw,file=bochs/os.img -boot c
+	qemu-system-x86_64 -drive format=raw,file=target/os.img -boot c
 
 run-bochs: clean build-release
 	dd if=target/os.img of=bochs/os.img bs=512 count=50000 conv=notrunc

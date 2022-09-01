@@ -1,6 +1,4 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-Makefile:22: warning: overriding recipe for target 'debug-qemu'
-Makefile:18: warning: ignoring old recipe for target 'debug-qemu'
 make: *** No rule to make target 'all'.  Stop.
 
 # GNU Make 4.3
@@ -10,14 +8,14 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Sep  1 10:11:10 2022
+# Make data base, printed on Thu Sep  1 15:45:59 2022
 
 # Variables
 
 # environment
 LC_ALL = C
 # environment
-WSLENV = ELECTRON_RUN_AS_NODE/w:WT_SESSION::WT_PROFILE_ID
+WSLENV = VSCODE_WSL_EXT_LOCATION/up
 # environment
 VSCODE_CWD = /mnt/c/Users/HP/AppData/Local/Programs/Microsoft VS Code
 # default
@@ -68,9 +66,8 @@ MAKEFILE_LIST := Makefile
 @F = $(notdir $@)
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
-# environment
-WT_PROFILE_ID = {61c54bbd-c2c6-5271-96e7-009a87ff44bf}
 # automatic
+ 
 *F = $(notdir $*)
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
@@ -83,7 +80,7 @@ SHELL = /bin/sh
 # default
 MAKECMDGOALS := all
 # environment
-SHLVL = 1
+SHLVL = 0
 # environment
 MAKELEVEL := 0
 # default
@@ -92,26 +89,23 @@ MAKE = $(MAKE_COMMAND)
 PATH = /home/yang/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/bin/remote-cli:/home/yang/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/d/VulkanSDK-1.2.198.1/Bin:/mnt/c/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64/compiler:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.1/cuda/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.1/extras/CUPTI/lib64:/mnt/c/Program Files/Git/cmd:/mnt/d/Go/bin:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/dotnet/:/mnt/d/mingw64/bin:/mnt/d/toolset:/mnt/c/Program Files/MySQL/MySQL Shell 8.0/bin/:/mnt/c/Users/HP/AppData/Roaming/local/bin:/mnt/c/Users/HP/.cargo/bin:/mnt/c/Program Files (x86)/Vim/vim82/:/mnt/c/Users/HP/AppData/Local/Programs/Python/Python38/Scripts/:/mnt/c/Users/HP/AppData/Local/Programs/Python/Python38/:/mnt/c/Users/HP/AppData/Local/Microsoft/WindowsApps:/mnt/d/IntelliJ IDEA 2020.3.2/bin:/mnt/c/Program Files/Bandizip/:/mnt/c/Program Files/JetBrains/PyCharm Community Edition 2020.2.3/bin:/mnt/c/Program Files/JetBrains/IntelliJ IDEA Community Edition 2020.2.3/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/include:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/lib:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v10.2/libnvvp:/mnt/c/Users/HP/AppData/Local/GitHubDesktop/app-2.5.6/resources/app/git/cmd:/mnt/c/Users/HP/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/HP/AppData/Local/bin/NASM:/mnt/d/vs/VC/Tools/MSVC/14.28.29910/bin/Hostx86/x86:/mnt/c/Program Files/Git:/mnt/c/Program Files/CMake/bin:/mnt/f/CLion 2021.2/bin:/mnt/f/Haskell/ghcup/bin:/mnt/c/Users/HP/AppData/Local/Programs/stack/x86_64-windows/ghc-8.8.4/bin:/mnt/c/Program:/mnt/c/Program Files/Bochs-2.7:/mnt/f/CLion 2021.2/bin/cmake/win/bin:/mnt/c/Users/HP/go/bin:/mnt/c/Users/HP/AppData/Roaming/npm:/mnt/c/Program Files (x86)/Tencent/QQGameTempest/Hall.57821/:/mnt/d/qemu:/snap/bin
 # default
 MAKEFILES := 
-# environment
-MOTD_SHOWN = update-motd
 # automatic
 ^F = $(notdir $^)
-# environment
-WT_SESSION = 607e1bf5-08c3-4afe-a6ab-e9a6e32963eb
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # automatic
 ?F = $(notdir $?)
 # environment
-NAME = Code
+NAME = LAPTOP-PM8DD81J
 # environment
 HOSTTYPE = x86_64
 # environment
+ 
 LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
 # automatic
 +F = $(notdir $+)
 # environment
-WSL_INTEROP = /run/WSL/17516_interop
+WSL_INTEROP = /run/WSL/14678_interop
 # 'override' directive
 GNUMAKEFLAGS := 
 # environment
@@ -125,9 +119,9 @@ USER = yang
 # default
 MAKE_VERSION := 4.3
 # environment
-_ = /mnt/c/Users/HP/AppData/Local/Programs/Microsoft VS Code/bin/code
+_ = /home/yang/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/node
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-696d48d2-da47-4975-b03c-a09749e2761e.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-aa73c6a3-f190-47da-8ccd-5d7a904f9a97.sock
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
@@ -147,7 +141,7 @@ WSL_DISTRO_NAME = Ubuntu-22.04
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # variable set hash-table stats:
-# Load=66/1024=6%, Rehash=0, Collisions=1/96=1%
+# Load=63/1024=6%, Rehash=0, Collisions=1/93=1%
 
 # Pattern-specific Variable Values
 
@@ -168,7 +162,7 @@ WSL_DISTRO_NAME = Ubuntu-22.04
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-01 09:37:01.6493161
+#  Last modified 2022-09-01 10:22:39.0274199
 #  File has been updated.
 #  Successfully updated.
 
@@ -193,6 +187,15 @@ build-release:
 #  recipe to execute (from 'Makefile', line 5):
 	cargo run --release
 
+debug-bochs: clean build-debug
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 23):
+	dd if=target/os.img of=bochs/os.img bs=512 count=50000 conv=notrunc
+	bochsdbg -q -f bochs/conf/bochsdbg-gdb.bxrc &
+	gdb target/x86_64-bootloader/bootloader/boot --eval-command="target remote :1234"
+
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
@@ -204,7 +207,8 @@ run-qemu: clean build-release
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 11):
-	qemu-system-x86_64 -drive format=raw,file=target/os.img -boot c --no-reboot
+	dd if=target/os.img of=bochs/os.img bs=512 count=50000 conv=notrunc
+	qemu-system-x86_64 -drive format=raw,file=bochs/os.img -boot c
 
 # Not a target:
 all:
@@ -213,37 +217,36 @@ all:
 #  File does not exist.
 #  File has not been updated.
 
-debug-qemu: clean build-debug clean build-debug
+debug-qemu: clean build-debug
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 22):
-	dd if=target/os.img of=bochs/os.img bs=512 count=50000 conv=notrunc
-	bochsdbg -q -f bochs/conf/bochsdbg-gdb.bxrc &
-	rust-gdb target/x86_64-bootloader/bootloader/boot --eval-command="target remote :1234"
+#  recipe to execute (from 'Makefile', line 19):
+	qemu-system-x86_64 -drive format=raw,file=target/os.img -boot c -s -S &
+	gdb target/x86_64-bootloader/bootloader/boot --eval-command="target remote :1234"
 
 run-bochs: clean build-release
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 14):
+#  recipe to execute (from 'Makefile', line 15):
 	dd if=target/os.img of=bochs/os.img bs=512 count=50000 conv=notrunc
 	bochs -q -f bochs/conf/bochsrc.bxrc
 
 # files hash-table stats:
-# Load=10/1024=1%, Rehash=0, Collisions=0/29=0%
+# Load=11/1024=1%, Rehash=0, Collisions=0/29=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 31 / storage = 269 B / avg = 8 B
-# current buf: size = 8162 B / used = 269 B / count = 31 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 32 / storage = 281 B / avg = 8 B
+# current buf: size = 8162 B / used = 281 B / count = 32 / avg = 8 B
 
-# strcache performance: lookups = 51 / hit rate = 39%
+# strcache performance: lookups = 51 / hit rate = 37%
 # hash-table stats:
-# Load=31/8192=0%, Rehash=0, Collisions=0/51=0%
-# Finished Make data base on Thu Sep  1 10:11:10 2022
+# Load=32/8192=0%, Rehash=0, Collisions=0/51=0%
+# Finished Make data base on Thu Sep  1 15:45:59 2022
 
  

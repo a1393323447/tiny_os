@@ -49,7 +49,7 @@ bximage -func=create -hd=10M -imgmode=flat ./bochs/os.img -q
 dd if=target/os.img of=bochs/os.img bs=512 count=250 conv=notrunc
 ```
 
-### 运行 `bochs`
+## 运行 `bochs`
 在目录下 `bochs/conf` 有如下配置文件:
 - `bochsdbg-gdb.bxrc`: 可以通过 `gdb` 远程调试，绑定 `localhost:1234`(需要在编译 `bochs` 时，开启 `--enable-gdb-stub`)
 - `bochsdbg-win`: 在 `window` 平台上开启 `bochs` 的、带有图形界面的 `debugger`
@@ -62,6 +62,26 @@ bochs -q -f bochs/conf/bochsrc.bxrc
 ```
 
 <img src="./imgs/bochs.png" />
+
+## 运行 `qemu`
+不同于 `bochs`，`qemu` 可以直接加载生成的 `target/os.img`: 
+
+```shell
+qemu-system-x86_64 -drive format=raw,file=bochs/os.img -boot c
+```
+
+<img src="./imgs/qemu.png" />
+
+## Makefile
+项目根目录下有一个 `Makefile` 文件，里面定义了一些运行和调试的命令:
+- `clean`: 用于清理生成的文件
+- `build-release`: 用于编译 `release` 版内核镜像
+- `build-debug`: 用于编译 `debug` 版内核镜像 (未完成)
+- `run-bochs`: 用于编译内核镜像，并启动 `bochs` 模拟
+- `run-qemu`: 用于编译内核镜像，并启动 `qemu` 模拟
+- `debug-bochs`: 用于编译内核镜像，启动 `bochs` 并通过 `rust-gdb` 远程 `debug`
+- `debug-qemu`: 用于编译内核镜像，启动 `qemu` 并通过 `rust-gdb` 远程 `debug`
+
 
 ## 项目结构
 本项目主要分为 `4` 个部分:
