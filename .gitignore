@@ -1,6 +1,11 @@
+# 编译时生成的文件
 /target
 # bochs debug 生成的文件
 bx_enh_dbg.ini
 bochs/bochs.out
 bochs/os.img
+bochs/os.img.lock
+# 本地的 vbox 配置
 /vbox
+# vscode 的 cache
+.vscode/*.log
