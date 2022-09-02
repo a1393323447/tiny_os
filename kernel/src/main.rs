@@ -1,8 +1,9 @@
 #![no_std]
 #![no_main]
 
+use kernel::gdt;
 use kernel::logger;
-use kernel::interrupts::init_idt;
+use kernel::interrupts;
 
 use core::{
     arch::asm,
@@ -16,10 +17,14 @@ use boot_info::BootInfo;
 pub extern "C" fn _start(boot_info: &'static mut BootInfo) -> ! {
     logger::init_logger(&boot_info.framebuffer);
 
-    init_idt();
+    interrupts::init();
+    gdt::init();
 
     // 触发断点
     x86_64::instructions::interrupts::int3();
+
+    // 在设置了 IST 后, stack overflow 不会导致 triple fault
+    stack_overflow();
 
     // 触发 double fault
     unsafe {
@@ -27,6 +32,16 @@ pub extern "C" fn _start(boot_info: &'static mut BootInfo) -> ! {
     };
 
     panic!("DEAK LOCK");
+}
+
+#[allow(unconditional_recursion)]
+fn stack_overflow() {
+    let mut rsp: u64;
+    unsafe {
+        asm!("mov {}, rsp", out(reg)rsp);
+    }
+    log::debug!("rsp = {:#x}", rsp);
+    stack_overflow();
 }
 
 
