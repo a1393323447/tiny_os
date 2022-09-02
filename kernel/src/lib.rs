@@ -4,3 +4,4 @@
 
 pub mod logger;
 pub mod interrupts;
+pub mod gdt;
