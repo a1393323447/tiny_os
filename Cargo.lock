@@ -66,6 +66,7 @@ dependencies = [
  "conquer-once",
  "lazy_static",
  "log",
+ "pc-keyboard",
  "pic8259",
  "spin 0.9.4",
  "spinning_top",
@@ -105,6 +106,12 @@ checksum = "abb12e687cfb44aa40f41fc3978ef76448f9b6038cad6aef4259d3c095a2382e"
 dependencies = [
  "cfg-if",
 ]
+
+[[package]]
+name = "pc-keyboard"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c6f2d937e3b8d63449b01401e2bae4041bc9dd1129c2e3e0d239407cf6635ac"
 
 [[package]]
 name = "pic8259"

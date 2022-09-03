@@ -14,6 +14,9 @@ pub fn init(boot_info: &BootInfo) {
     unsafe { interrupts::PICS.lock().initialize(); }
 
     logger::init_logger(&boot_info.framebuffer);
+
+    // 启用中断
+    x86_64::instructions::interrupts::enable();
 }
 
 pub fn hlt_loop() -> ! {
