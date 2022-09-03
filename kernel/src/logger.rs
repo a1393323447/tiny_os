@@ -67,7 +67,7 @@ impl Attribute {
         self
     }
 
-    fn to_code(&self) -> u8 {
+    const fn to_code(&self) -> u8 {
         let mut code = (self.blink as u8) << 7;
         code |=  self.fg as u8;
         code |= (self.bg as u8) & 0x7f;
@@ -160,21 +160,25 @@ impl log::Log for LockedLogger {
     }
 
     fn log(&self, record: &log::Record) {
-        let mut logger = self.0.lock();
+        use x86_64::instructions::interrupts;
 
-        let fg = logger.attr.fg;
+        interrupts::without_interrupts(|| {
+            let mut logger = self.0.lock();
 
-        match record.level() {
-            log::Level::Error => logger.set_fg(Color::Red),
-            log::Level::Warn  => logger.set_fg(Color::Yellow),
-            log::Level::Info  => logger.set_fg(Color::LightBlue),
-            log::Level::Debug => logger.set_fg(Color::LightGreen),
-            log::Level::Trace => logger.set_fg(Color::White),
-        };
+            let fg = logger.attr.fg;
 
-        writeln!(logger, "{}: {}", record.level(), record.args()).unwrap();
+            match record.level() {
+                log::Level::Error => logger.set_fg(Color::Red),
+                log::Level::Warn  => logger.set_fg(Color::Yellow),
+                log::Level::Info  => logger.set_fg(Color::LightBlue),
+                log::Level::Debug => logger.set_fg(Color::LightGreen),
+                log::Level::Trace => logger.set_fg(Color::White),
+            };
 
-        logger.set_fg(fg);
+            writeln!(logger, "{}: {}", record.level(), record.args()).unwrap();
+
+            logger.set_fg(fg);
+        });
     }
 
     fn flush(&self) {}
@@ -226,14 +230,41 @@ impl Logger {
         self.x = 0;
     }
 
+    fn clear_row(&mut self, row: usize) {
+        let blank = Attribute {
+            blink: false,
+            fg: self.attr.bg,
+            bg: self.attr.bg,
+        };
+
+        let blank_cell = Cell::new(' ', blank.into());
+
+        for col in 0..VGA_TEXT_MODE_WIDTH {
+            self.framebuffer[row * VGA_TEXT_MODE_WIDTH + col] = blank_cell;
+        }
+    }
+
     fn newline(&mut self) {
         self.carriage_return();
         
         self.y += 1;
         
         if self.y >= VGA_TEXT_MODE_HEIGHT {
-            self.clear();
+            self.roll();
         }
+    }
+
+    fn roll(&mut self) {
+        for row in 1..VGA_TEXT_MODE_HEIGHT {
+            for col in 0..VGA_TEXT_MODE_WIDTH {
+                let cell = self.framebuffer[row * VGA_TEXT_MODE_WIDTH + col];
+                self.framebuffer[(row - 1) * VGA_TEXT_MODE_WIDTH + col] = cell;
+            }
+        }
+
+        self.y = VGA_TEXT_MODE_HEIGHT - 1;
+        self.clear_row(VGA_TEXT_MODE_HEIGHT - 1);
+        self.x = 0;
     }
 
     /// 清屏
