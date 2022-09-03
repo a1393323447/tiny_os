@@ -89,25 +89,31 @@ lazy_static! {
     static ref GDT: (GlobalDescriptorTable, Selectors) = {
         let mut gdt = GlobalDescriptorTable::new();
         let code_selector = gdt.add_entry(Descriptor::kernel_code_segment());
+        let data_selector = gdt.add_entry(Descriptor::kernel_data_segment());
         let tss_selector = gdt.add_entry(Descriptor::tss_segment(&TSS));
 
-        (gdt, Selectors { code_selector, tss_selector })
+        (gdt, Selectors { code_selector, data_selector, tss_selector })
     };
 }
 
 /// 64 位段选择子
 struct Selectors {
     code_selector: SegmentSelector,
+    data_selector: SegmentSelector,
     tss_selector: SegmentSelector,
 }
 
 pub fn init() {
     use x86_64::instructions::tables::load_tss;
-    use x86_64::instructions::segmentation::{CS, Segment};
+    use x86_64::instructions::segmentation::{CS, DS, ES, GS, FS, Segment};
     
     GDT.0.load();
     unsafe {
         CS::set_reg(GDT.1.code_selector);
+        DS::set_reg(GDT.1.data_selector);
+        ES::set_reg(GDT.1.data_selector);
+        GS::set_reg(GDT.1.data_selector);
+        FS::set_reg(GDT.1.data_selector);
         load_tss(GDT.1.tss_selector);
     }
 }
