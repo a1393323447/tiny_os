@@ -67,6 +67,17 @@ where
         self.original.len()
     }
 
+    /// Returns the largest detected physical memory address.
+    ///
+    /// Useful for creating a mapping for all physical memory.
+    pub fn max_phys_addr(&self) -> PhysAddr {
+        self.original
+            .clone()
+            .map(|r| r.start() + r.len())
+            .max()
+            .unwrap()
+    }
+
     /// Converts this type to a boot info memory map.
     ///
     /// The memory map is placed in the given `regions` slice. The length of the given slice

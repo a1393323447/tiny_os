@@ -1,9 +1,7 @@
 #![no_std]
 #![no_main]
 
-use kernel::gdt;
 use kernel::logger;
-use kernel::interrupts;
 
 use core::{
     arch::asm,
@@ -11,14 +9,10 @@ use core::{
 };
 use boot_info::BootInfo;
 
-
-
 #[no_mangle]
 pub extern "C" fn _start(boot_info: &'static mut BootInfo) -> ! {
-    logger::init_logger(&boot_info.framebuffer);
-
-    interrupts::init();
-    gdt::init();
+    
+    kernel::init(&boot_info);
 
     // 触发断点
     x86_64::instructions::interrupts::int3();
@@ -31,7 +25,7 @@ pub extern "C" fn _start(boot_info: &'static mut BootInfo) -> ! {
         *(0x114514 as *mut u64) = 24;
     };
 
-    panic!("DEAK LOCK");
+    kernel::hlt_loop();
 }
 
 #[allow(unconditional_recursion)]
@@ -55,6 +49,6 @@ fn panic(info: &PanicInfo) -> ! {
     log::error!("{}", info);
 
     loop {
-        unsafe { asm!("cli; hlt") };
+        kernel::hlt_loop();
     }
 }

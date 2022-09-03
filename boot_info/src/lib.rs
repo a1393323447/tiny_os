@@ -29,6 +29,8 @@ pub struct BootInfo {
     pub memory_regions: MemoryRegions,
     /// Information about the framebuffer for screen output.
     pub framebuffer: FrameBuffer,
+    /// The start address of the physical memory mapping.
+    pub physical_memory_offset: u64,
     /// The address of the `RSDP` data structure, which can be use to find the ACPI tables.
     ///
     /// This field is `None` if no `RSDP` was found (for BIOS) or reported (for UEFI).

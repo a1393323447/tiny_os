@@ -253,6 +253,7 @@ impl Logger {
         self.framebuffer.fill(blank_cell);
     }
 
+    // TODO: 修改成仅支持 ascii
     fn write_char(&mut self, ch: char) {
         match ch {
             '\n' => self.newline(),

@@ -13,7 +13,7 @@ use boot_info::{BootInfo, FrameBuffer, FrameBufferInfo, TlsTemplate, MemoryRegio
 use x86_64::{
     structures::paging::{
         FrameAllocator, Mapper, Page, PageSize, PageTableFlags,
-        PhysFrame, Size4KiB,
+        PhysFrame, Size4KiB, Size2MiB,
     },
     PhysAddr, VirtAddr,
 };
@@ -183,11 +183,38 @@ where
         framebuffer_virt_addr
     };
 
+    let physical_memory_offset = {
+        log::info!("Map physical memory");
+
+        let start_frame = PhysFrame::containing_address(PhysAddr::new(0));
+        let max_phys = frame_allocator.max_phys_addr();
+        let end_frame: PhysFrame<Size2MiB> = PhysFrame::containing_address(max_phys - 1u64);
+
+        let size = max_phys.as_u64();
+        let alignment = Size2MiB::SIZE;
+        let offset = used_entries.get_free_address(size, alignment);
+
+        for frame in PhysFrame::range_inclusive(start_frame, end_frame) {
+            let page = Page::containing_address(offset + frame.start_address().as_u64());
+            let flags = PageTableFlags::PRESENT | PageTableFlags::WRITABLE;
+            match unsafe { kernel_page_table.map_to(page, frame, flags, frame_allocator) } {
+                Ok(tlb) => tlb.ignore(),
+                Err(err) => panic!(
+                    "failed to map page {:?} to frame {:?}: {:?}",
+                    page, frame, err
+                ),
+            };
+        }
+
+        offset
+    };
+
     Mappings {
         framebuffer: framebuffer_virt_addr,
         entry_point,
         stack_end,
         used_entries,
+        physical_memory_offset,
         tls_template,
     }
 }
@@ -201,6 +228,8 @@ pub struct Mappings {
     /// Keeps track of used entries in the level 4 page table, useful for finding a free
     /// virtual memory when needed.
     pub used_entries: UsedLevel4Entries,
+    /// The start address of the physical memory mapping.
+    pub physical_memory_offset: VirtAddr,
     /// The start address of the framebuffer.
     pub framebuffer: VirtAddr,
     /// The thread local storage template of the kernel executable, if it contains one.
@@ -304,6 +333,7 @@ where
         memory_regions: memory_regions.into(),
         framebuffer,
         rsdp_addr: system_info.rsdp_addr.map(|addr| addr.as_u64()).into(),
+        physical_memory_offset: mappings.physical_memory_offset.as_u64(),
         tls_template: mappings.tls_template.into(),
     });
 

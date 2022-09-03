@@ -5,3 +5,19 @@
 pub mod logger;
 pub mod interrupts;
 pub mod gdt;
+
+use boot_info::BootInfo;
+
+pub fn init(boot_info: &BootInfo) {
+    gdt::init();
+    interrupts::init_idt();
+    unsafe { interrupts::PICS.lock().initialize(); }
+
+    logger::init_logger(&boot_info.framebuffer);
+}
+
+pub fn hlt_loop() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
+}
