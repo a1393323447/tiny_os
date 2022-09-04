@@ -11,19 +11,10 @@ pub extern "C" fn _start(boot_info: &'static mut BootInfo) -> ! {
     kernel::init(&boot_info);
     
     log::info!("Running in kernel");
+    log::info!("{:#?}", boot_info);
 
     kernel::hlt_loop();
 }
-
-// #[allow(unconditional_recursion)]
-// fn stack_overflow() {
-//     let mut rsp: u64;
-//     unsafe {
-//         asm!("mov {}, rsp", out(reg)rsp);
-//     }
-//     log::debug!("rsp = {:#x}", rsp);
-//     stack_overflow();
-// }
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {

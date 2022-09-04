@@ -163,13 +163,20 @@ extern "x86-interrupt" fn breakpoint_handler(
 
 extern "x86-interrupt" fn page_fault_handler(
     stack_frame: InterruptStackFrame,
-    page_fault_error_code: PageFaultErrorCode
+    error_code: PageFaultErrorCode
 )
 {
-    log::error!("PAGE FAULT: {:#?}", stack_frame);
-    log::error!("error: {:?}", page_fault_error_code);
-
-    panic!("Page fault");
+    use x86_64::registers::control::Cr2;
+    // The CR2 register is automatically set by the CPU on a page fault 
+    // and contains the accessed virtual address that caused the page fault. 
+    log::error!(concat!(
+        "EXCEPTION: PAGE FAULT\n",
+        "Accessed Address: {:?}\n",
+        "Error Code: {:?}\n",
+        "{:#?}"
+    ), Cr2::read(), error_code, stack_frame);
+    
+    crate::hlt_loop();
 }
 
 extern "x86-interrupt" fn general_protection_handler(
@@ -208,7 +215,7 @@ extern "x86-interrupt" fn double_fault_handler(
 extern "x86-interrupt" fn timer_interrupt_handler(
     _stack_frame: InterruptStackFrame)
 {
-    log::info!(".");
+    print!(".");
 
     // 发送 EOI 信号
     unsafe {
@@ -224,19 +231,27 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStac
 
     lazy_static! {
         static ref KEYBOARD: Mutex<Keyboard<layouts::Us104Key, ScancodeSet1>> = Mutex::new(
+            // HandleControl 会将 ctrl + [a - z] 映射到 unicode 字符 'U+0001' - 'U+001a'
+            // 但暂时不去处理这种情况, 所以选择 Ignore
             Keyboard::new(layouts::Us104Key, ScancodeSet1, HandleControl::Ignore)
         );
     }
 
     let mut keyboard = KEYBOARD.lock();
-    let mut port = Port::new(0x60);
 
+    // https://wiki.osdev.org/%228042%22_PS/2_Controller#Data_Port
+    const PS2_CONTROLLER_DATA_PORT: u16 = 0x60;
+    let mut port = Port::new(PS2_CONTROLLER_DATA_PORT);
+
+    // 在读取 scancode 之前, 键盘不能继续输入
     let scancode: u8 = unsafe { port.read() };
+
+    // scancode 是一个 u8 , 所以选择使用 add_byte
     if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
         if let Some(key) = keyboard.process_keyevent(key_event) {
             match key {
-                DecodedKey::Unicode(character) => log::info!("{}", character),
-                DecodedKey::RawKey(key) => log::info!("{:?}", key),
+                DecodedKey::Unicode(character) => print!("{}", character),
+                DecodedKey::RawKey(key) => print!("{:?}", key),
             }
         }
     }
