@@ -9,6 +9,27 @@ use conquer_once::spin::OnceCell;
 const VGA_TEXT_MODE_HEIGHT: usize = 25;
 const VGA_TEXT_MODE_WIDTH:  usize = 80;
 
+
+#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) => ($crate::logger::_print(format_args!($($arg)*)));
+}
+
+#[macro_export]
+macro_rules! println {
+    () => ($crate::print!("\n"));
+    ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
+}
+
+#[doc(hidden)]
+pub fn _print(args: fmt::Arguments) {
+    LOGGER.get()
+          .unwrap().0
+          .lock()
+          .write_fmt(args)
+          .unwrap();
+}
+
 #[derive(Clone, Copy)]
 #[repr(u8)]
 pub enum Color {
