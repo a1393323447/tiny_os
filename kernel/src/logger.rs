@@ -23,11 +23,15 @@ macro_rules! println {
 
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
-    LOGGER.get()
+    use x86_64::instructions::interrupts;
+    // 防止死锁
+    interrupts::without_interrupts(|| {
+        LOGGER.get()
           .unwrap().0
           .lock()
           .write_fmt(args)
           .unwrap();
+    });
 }
 
 #[derive(Clone, Copy)]
