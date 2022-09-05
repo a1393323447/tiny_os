@@ -65,6 +65,7 @@ dependencies = [
  "boot_info",
  "conquer-once",
  "lazy_static",
+ "linked_list_allocator",
  "log",
  "pc-keyboard",
  "pic8259",
@@ -80,6 +81,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 dependencies = [
  "spin 0.5.2",
+]
+
+[[package]]
+name = "linked_list_allocator"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "636c3bc929db632724303109c88d5d559a2a60f62243bb041387f03fa081d94a"
+dependencies = [
+ "spinning_top",
 ]
 
 [[package]]
