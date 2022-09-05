@@ -122,6 +122,8 @@ qemu-system-x86_64 -drive format=raw,file=bochs/os.img -boot c
         - [x] 初步处理 `GP Fault`
         - [x] 处理 `Double Fault`
     - [ ] 实现动态内存分配器
+        - [x] 通过 [`linked_list_allocator`](https://crates.io/crates/linked_list_allocator) 实现初步的内存分配
+        - [ ] 实现 `buddy system` 内存分配器
     - [ ] 实现多任务(抢占式调度)
     - [ ] 实现内核级的协作式调度
     - [ ] 实现 `FAT32` 文件系统
