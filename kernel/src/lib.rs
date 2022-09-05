@@ -6,6 +6,7 @@
 pub mod logger;
 pub mod interrupts;
 pub mod gdt;
+pub mod memory;
 
 use boot_info::BootInfo;
 

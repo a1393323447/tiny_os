@@ -119,8 +119,8 @@ struct Cell {
 }
 
 impl Cell {
-    fn new(ch: char, code: ColorCode) -> Cell {
-        Cell { ascii_char: ch as u8, color_code: code }
+    fn new(ch: u8, code: ColorCode) -> Cell {
+        Cell { ascii_char: ch, color_code: code }
     }
 }
 
@@ -262,7 +262,7 @@ impl Logger {
             bg: self.attr.bg,
         };
 
-        let blank_cell = Cell::new(' ', blank.into());
+        let blank_cell = Cell::new(b' ', blank.into());
 
         for col in 0..VGA_TEXT_MODE_WIDTH {
             self.framebuffer[row * VGA_TEXT_MODE_WIDTH + col] = blank_cell;
@@ -303,27 +303,32 @@ impl Logger {
             bg: self.attr.bg,
         };
 
-        let blank_cell = Cell::new(' ', blank.into());
+        let blank_cell = Cell::new(b' ', blank.into());
 
         
         self.framebuffer.fill(blank_cell);
     }
 
-    // TODO: 修改成仅支持 ascii
+    fn write_byte(&mut self, byte: u8) {
+        if self.x >= VGA_TEXT_MODE_WIDTH {
+            self.newline();
+        }
+        let pos = self.y * VGA_TEXT_MODE_WIDTH + self.x;
+        self.framebuffer[pos] = Cell::new(byte, self.attr.into());
+        self.x += 1;
+        // 防止编译器优化
+        let _ = unsafe { ptr::read_volatile(&self.framebuffer[pos] as *const Cell) };
+    }
+
+    // 仅支持 ascii char
     fn write_char(&mut self, ch: char) {
-        match ch {
-            '\n' => self.newline(),
-            '\r' => self.carriage_return(),
-            ch => {
-                if self.x >= VGA_TEXT_MODE_WIDTH {
-                    self.newline();
-                }
-                let pos = self.y * VGA_TEXT_MODE_WIDTH + self.x;
-                self.framebuffer[pos] = Cell::new(ch, self.attr.into());
-                self.x += 1;
-                // 防止编译器优化
-                let _ = unsafe { ptr::read_volatile(&self.framebuffer[pos] as *const Cell) };
-            }
+        match ch as u8 {
+            b'\n' => self.newline(),
+            b'\r' => self.carriage_return(),
+            byte @ 0x20..=0x7e => {
+                self.write_byte(byte);
+            },
+            _ => self.write_byte(0xfe),
         }
     }
 }
