@@ -61,8 +61,6 @@ dd if=target/os.img of=bochs/os.img bs=512 count=250 conv=notrunc
 bochs -q -f bochs/conf/bochsrc.bxrc
 ```
 
-<img src="./imgs/bochs.png" />
-
 ## 运行 `qemu`
 不同于 `bochs`，`qemu` 可以直接加载生成的 `target/os.img`: 
 
@@ -70,7 +68,7 @@ bochs -q -f bochs/conf/bochsrc.bxrc
 qemu-system-x86_64 -drive format=raw,file=bochs/os.img -boot c
 ```
 
-<img src="./imgs/qemu.png" />
+<img src="./imgs/qemu.gif" />
 
 ## Makefile
 项目根目录下有一个 `Makefile` 文件，里面定义了一些运行和调试的命令:
@@ -103,6 +101,11 @@ qemu-system-x86_64 -drive format=raw,file=bochs/os.img -boot c
 - kernel
     - [x] 准备 `logger` (用于实现 `tiny os` 的 打印函数以及内核开发时 debug )
     - [ ] 处理各种异常、中断
+        - [x] 初步处理时钟中断
+        - [x] 初步处理键盘输入
+        - [x] 初步处理 `Page Fault`
+        - [x] 初步处理 `GP Fault`
+        - [x] 处理 `Double Fault`
     - [ ] 实现动态内存分配器
     - [ ] 实现多任务(抢占式调度)
     - [ ] 实现内核级的协作式调度
@@ -110,7 +113,7 @@ qemu-system-x86_64 -drive format=raw,file=bochs/os.img -boot c
     - [ ] 实现 `shell`
 - 编译
     - [ ] 实现更灵活的 `Builder` (可以选择编译 `debug` 版和 `release` 版的镜像)
-    - [ ] 生成可以直接加载的内核镜像，而不是通过 `dd` 工具刻入 `bochs/os.img` 中
+    - [ ] 生成 `bochs` 可以直接加载的内核镜像，而不是通过 `dd` 工具刻入 `bochs/os.img` 中
 
 ## 参考资料
 - [AMD64 Architecture Programmer’s Manual Volume 2: System Programming](https://www.amd.com/system/files/TechDocs/24593.pdf)
