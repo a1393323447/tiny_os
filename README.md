@@ -6,7 +6,22 @@
 ## 环境配置
 
 ### 开发平台
-本项目在 `linux` 系统上开发。`windows` 系统上可以通过安装 `wsl2` 运行 `linux` 子系统。
+本项目在 `linux` 系统上开发。`windows` 系统上可以通过安装 `WSL` 运行 `linux` 子系统。
+
+如果你使用的是 `WSL`:
+- 在 `windows` 中安装一个 X Server；推荐安装 [Xming](https://sourceforge.net/projects/xming/) 或 [VcXsvr](https://sourceforge.net/projects/xming/)。
+    - 需要通过 `-ac` 启动 X Server , 或者通过 GUI 勾选 `disable access control` 。
+- 在 `WSL` 中:
+    - 如果使用的是 `WSL` (version 1):
+    ```bash
+    export DISPLAY=:0
+    ```
+    - 如果使用的是 `WSL2` (version 2):
+    ```bash
+    export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
+    ```
+    如果不想每开一个终端都输入上述语句, 就把它加在 `~/.bashrc` 或者 `~/.profile` 文件的末尾。
+- 如果发生类似 `Could not initialize SDL (No available video device) ...` 或者任何关于 GTK 等错误，请检查你的 X Server 是否启动以及是否正确设置了环境变量 `DISPLAY` 。
 
 ### Rust
 `Rust` 是一门现代的系统级编程语言，本项目主要使用 `Rust` 语言开发。通过[Rust 官网](https://www.rust-lang.org/tools/install)下载并安装。注意：本项目要求安装 `nightly` 版工具链。
