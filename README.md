@@ -126,6 +126,9 @@ qemu-system-x86_64 -drive format=raw,file=bochs/os.img -boot c
         - [ ] 实现 `buddy system` 内存分配器
     - [ ] 实现多任务(抢占式调度)
     - [ ] 实现内核级的协作式调度
+        - [x] 初步实现
+        - [ ] 更好的调度算法
+        - [ ] 实现全局可用的 `spawn`
     - [ ] 实现 `FAT32` 文件系统
     - [ ] 实现 `shell`
 - 编译
