@@ -225,36 +225,14 @@ extern "x86-interrupt" fn timer_interrupt_handler(
 }
 
 extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
-    use spin::Mutex;
     use x86_64::instructions::port::Port;
-
-    lazy_static! {
-        static ref KEYBOARD: Mutex<Keyboard<layouts::Us104Key, ScancodeSet1>> = Mutex::new(
-            // HandleControl 会将 ctrl + [a - z] 映射到 unicode 字符 'U+0001' - 'U+001a'
-            // 但暂时不去处理这种情况, 所以选择 Ignore
-            Keyboard::new(layouts::Us104Key, ScancodeSet1, HandleControl::Ignore)
-        );
-    }
-
-    let mut keyboard = KEYBOARD.lock();
 
     // https://wiki.osdev.org/%228042%22_PS/2_Controller#Data_Port
     const PS2_CONTROLLER_DATA_PORT: u16 = 0x60;
+
     let mut port = Port::new(PS2_CONTROLLER_DATA_PORT);
-
-    // 在读取 scancode 之前, 键盘不能继续输入
     let scancode: u8 = unsafe { port.read() };
-
-    // scancode 是一个 u8 , 所以选择使用 add_byte
-    if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
-        if let Some(key) = keyboard.process_keyevent(key_event) {
-            match key {
-                DecodedKey::Unicode(character) => print!("{}", character),
-                DecodedKey::RawKey(key) => print!("{:?}", key),
-            }
-        }
-    }
+    crate::task::keyboard::add_scancode(scancode);
 
     unsafe {
         PICS.lock()

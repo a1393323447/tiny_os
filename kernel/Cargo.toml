@@ -16,3 +16,5 @@ linked_list_allocator = "0.10.1"
 boot_info = { path = "../boot_info" }
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
 conquer-once = { version = "0.3.2", default-features = false }
+futures-util = { version = "0.3.24", default-features = false, features = ["alloc"] }
+crossbeam-queue = { version = "0.3.6", default-features = false, features = ["alloc"] }
