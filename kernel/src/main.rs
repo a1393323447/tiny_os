@@ -7,7 +7,7 @@ use kernel::task::executor::Executor;
 pub use kernel::{print, println};
 
 use kernel::memory;
-use kernel::task::Task;
+use kernel::task::{Task, spawn};
 use kernel::task::keyboard::print_keypresses;
 use boot_info::BootInfo;
 use x86_64::VirtAddr;
@@ -42,4 +42,22 @@ async fn async_number() -> u32 {
 async fn example_task() {
     let number = async_number().await;
     println!("async number: {}", number);
+    for i in 0..1000000000 {
+        if i % 100000000 == 0 {
+            spawn(global_spawn(i / 100000000));
+        }
+    }
+}
+
+async fn global_spawn(i: i32) {
+    let arr = [i, i*i];
+    let arr_ref = &arr;
+
+    println!("{:p}", arr_ref);
+
+    let num = async_number().await;
+
+    println!("{:p}", arr_ref);
+    
+    println!("{}: Global spawn {} !", i, num);
 }

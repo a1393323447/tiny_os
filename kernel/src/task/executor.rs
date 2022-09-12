@@ -1,4 +1,4 @@
-use super::{Task, TaskId};
+use super::{Task, TaskId, SPAWN_TASKS_QUEUE};
 
 use alloc::{collections::BTreeMap, sync::Arc, task::Wake};
 use core::task::{Waker, Context, Poll};
@@ -36,9 +36,19 @@ impl Executor {
 
     pub fn run(&mut self) -> ! {
         loop {
+            self.get_spawn_task();
             self.run_ready_tasks();
             // interrupt can happen here
             self.sleep_if_idle();
+        }
+    }
+
+    fn get_spawn_task(&mut self) {
+        let queue = SPAWN_TASKS_QUEUE.get_or_init(|| { ArrayQueue::new(100) });
+        while let Some(raw_task) = queue.pop() {
+            let task = unsafe { raw_task.into_task() };
+            self.task_queue.push(task.id).expect("queue full");
+            self.tasks.insert(task.id, task);
         }
     }
 
